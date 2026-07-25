@@ -1,0 +1,71 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+allowBuilds:
+  # sharp is Next.js's optional native image-optimizer. Skipping its native
+  # build avoids a node-gyp toolchain requirement, consistent with the
+  # tree-sitter WASM-over-native decision (D9). Next falls back to
+  # unoptimized image handling, which is fine for this scaffold.
+  sharp: false
+
+catalog:
+  # framework
+  next: 16.2.11
+  react: 19.2.8
+  react-dom: 19.2.8
+  typescript: 5.9.3
+  "@types/node": 26.1.1
+  "@types/react": 19.2.17
+  "@types/react-dom": 19.2.3
+
+  # tooling
+  turbo: 2.10.6
+  "@biomejs/biome": 2.5.5
+  vitest: 4.1.10
+  tsup: 8.5.1
+  dotenv: 17.4.2
+
+  # validation / shared
+  zod: 4.4.3
+
+  # db
+  drizzle-orm: 0.45.2
+  drizzle-kit: 0.31.10
+  postgres: 3.4.9
+  "@neondatabase/serverless": 1.1.0
+
+  # auth
+  next-auth: 5.0.0-beta.32
+  "@auth/drizzle-adapter": 1.11.3
+
+  # background jobs
+  "@trigger.dev/sdk": 4.5.7
+  "@trigger.dev/build": 4.5.7
+
+  # redis
+  "@upstash/redis": 1.38.0
+  "@upstash/ratelimit": 2.0.8
+
+  # github
+  "@octokit/app": 16.1.2
+  "@octokit/rest": 22.0.1
+  "@octokit/webhooks": 14.2.0
+  tar-stream: 3.2.0
+  gunzip-maybe: 1.4.2
+
+  # ai
+  ai: 7.0.37
+  "@ai-sdk/openai": 4.0.20
+  "@ai-sdk/anthropic": 4.0.20
+
+  # parsing
+  web-tree-sitter: 0.26.11
+
+  # styling
+  tailwindcss: 4.3.3
+  "@tailwindcss/postcss": 4.3.3
+  postcss: 8.5.23
+
+minimumReleaseAgeExclude:
+  - postcss@8.5.23

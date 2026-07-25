@@ -1,0 +1,29 @@
+{
+  "name": "deplyx",
+  "private": true,
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "trigger:dev": "turbo run trigger:dev",
+    "db:role": "turbo run db:role --filter=@deplyx/db",
+    "db:migrate": "turbo run db:migrate --filter=@deplyx/db",
+    "db:seed": "turbo run db:seed --filter=@deplyx/db"
+  },
+  "devDependencies": {
+    "turbo": "catalog:",
+    "typescript": "catalog:",
+    "@biomejs/biome": "catalog:",
+    "vitest": "catalog:",
+    "@types/node": "catalog:"
+  }
+}
