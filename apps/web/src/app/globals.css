@@ -1,1 +1,145 @@
 @import "tailwindcss";
+
+/* ===================== Deplyx landing ===================== */
+#deplyx-root * {
+  box-sizing: border-box;
+}
+
+#deplyx-root a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+#deplyx-root ::selection {
+  background: #ff6a2b;
+  color: #0a0908;
+}
+
+@keyframes dplx-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes dplx-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(9px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+}
+
+@keyframes dplx-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes dplx-reveal {
+  from {
+    transform: translateY(30px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes dplx-navtint {
+  0%,
+  26% {
+    background: transparent;
+    border-bottom-color: transparent;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  34%,
+  100% {
+    background: var(--nav-tint);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom-color: var(--nav-border);
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+}
+
+/* Content is ALWAYS visible (opacity:1) — the entrance animates transform only,
+   so content never gets stuck transparent if the animation clock is frozen. */
+#deplyx-root [data-reveal] {
+  opacity: 1 !important;
+  animation: dplx-reveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Nav tint on scroll via CSS scroll-timeline — no JS/layout thrash. */
+@supports (animation-timeline: scroll()) {
+  #deplyx-root [data-nav] {
+    animation: dplx-navtint both;
+    animation-timeline: scroll(root);
+    animation-range: 0 150px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #deplyx-root * {
+    animation: none !important;
+  }
+  #deplyx-root [data-reveal] {
+    opacity: 1 !important;
+  }
+}
+
+/* Hover states (real :hover — the source design used a design-tool-only
+   `style-hover` attribute that has no browser equivalent). */
+#deplyx-root .dplx-nav-link {
+  color: var(--text2);
+  transition: color 0.3s;
+}
+#deplyx-root .dplx-nav-link:hover {
+  color: var(--text);
+}
+
+#deplyx-root .dplx-btn-outline {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s,
+    background 0.3s;
+}
+#deplyx-root .dplx-btn-outline:hover {
+  border-color: var(--accent);
+  background: rgba(255, 106, 43, 0.08);
+}
+
+#deplyx-root .dplx-step {
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s;
+}
+#deplyx-root .dplx-step:hover {
+  border-color: rgba(255, 106, 43, 0.35);
+}
+
+#deplyx-root .dplx-cta {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s;
+  box-shadow: 0 0 0 rgba(255, 106, 43, 0);
+}
+#deplyx-root .dplx-cta:hover {
+  box-shadow: 0 20px 60px rgba(255, 106, 43, 0.35);
+}
