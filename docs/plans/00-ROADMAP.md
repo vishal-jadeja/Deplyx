@@ -7,7 +7,7 @@ Source design/approval: `C:\Users\visha\.claude\plans\you-are-a-senior-sleepy-ye
 | # | Phase | Status | Updated |
 |---|---|---|---|
 | 01 | [Monorepo + tooling](01-monorepo-tooling.md) | done | 2026-07-25 |
-| 02 | [DB schema + RLS](02-db-schema-rls.md) | not started | — |
+| 02 | [DB schema + RLS](02-db-schema-rls.md) | code complete, pending live-DB verification | 2026-07-30 |
 | 03 | [Auth.js + GitHub App](03-auth-github-app.md) | not started | — |
 | 04 | [Trigger.dev + feed-poll](04-trigger-feed-poll.md) | not started | — |
 | 05 | [Scanner + findings](05-scanner-findings.md) | not started | — |

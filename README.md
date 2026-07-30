@@ -3,10 +3,10 @@
 GitHub-integrated dashboard that scans connected repos for deprecated/discontinued AI models
 (and, later, deprecated packages), and generates reviewable fix PRs.
 
-> **Status:** Phase 01 of the build (monorepo + tooling scaffold) is in progress. This README is
-> a stub — the full local-setup guide (env vars, GitHub App registration, application-role
-> creation, migrations, Trigger.dev) lands in Phase 06 (`docs/plans/06-dashboard-readonly.md`),
-> once there's a working end-to-end path to document.
+> **Status:** see [`PROJECT_STATUS.md`](PROJECT_STATUS.md) for current phase and next action. This
+> README is a stub — the full local-setup guide (env vars, GitHub App registration,
+> application-role creation, migrations, Trigger.dev) lands in Phase 06
+> (`docs/plans/06-dashboard-readonly.md`), once there's a working end-to-end path to document.
 
 ## Plan
 
