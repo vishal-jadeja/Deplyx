@@ -4,6 +4,7 @@ import { inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { findings, githubInstallations, repositories, users } from "../src/schema/index.js";
+import { SEED_USERS } from "../src/seed-fixtures.js";
 
 /**
  * Seeds 2 users, 1 GitHub installation + repository + finding each — the
@@ -23,25 +24,6 @@ import { findings, githubInstallations, repositories, users } from "../src/schem
 // scripts/ runs with cwd = packages/db; the root .env lives two levels up.
 loadEnv({ path: resolve(process.cwd(), "../../.env") });
 
-const SEEDS = [
-  {
-    email: "alice@example.com",
-    accountLogin: "alice-org",
-    installationId: 990_001,
-    githubRepoId: 880_001,
-    repoName: "alice-repo",
-    matchedValue: "llama-3.3-70b-versatile",
-  },
-  {
-    email: "bob@example.com",
-    accountLogin: "bob-org",
-    installationId: 990_002,
-    githubRepoId: 880_002,
-    repoName: "bob-repo",
-    matchedValue: "gpt-4-32k",
-  },
-] as const;
-
 async function main(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
@@ -55,11 +37,11 @@ async function main(): Promise<void> {
     await db.delete(users).where(
       inArray(
         users.email,
-        SEEDS.map((s) => s.email),
+        SEED_USERS.map((s) => s.email),
       ),
     );
 
-    for (const seed of SEEDS) {
+    for (const seed of SEED_USERS) {
       const [user] = await db.insert(users).values({ email: seed.email }).returning();
       if (!user) throw new Error(`Failed to insert seed user ${seed.email}`);
 
