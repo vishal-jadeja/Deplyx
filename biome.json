@@ -21,7 +21,8 @@
       "!**/coverage",
       "!**/pnpm-lock.yaml",
       "!packages/scanner/grammars",
-      "!skills-lock.json"
+      "!skills-lock.json",
+      "!packages/db/drizzle"
     ]
   },
   "formatter": {

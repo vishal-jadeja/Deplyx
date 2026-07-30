@@ -13,6 +13,7 @@
     "trigger:dev": "trigger dev"
   },
   "dependencies": {
+    "@deplyx/db": "workspace:*",
     "@deplyx/shared": "workspace:*",
     "lenis": "1.1.13",
     "next": "catalog:",

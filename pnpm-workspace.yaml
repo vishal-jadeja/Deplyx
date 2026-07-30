@@ -7,6 +7,11 @@ allowBuilds:
   # build avoids a node-gyp toolchain requirement, consistent with the
   # tree-sitter WASM-over-native decision (D9). Next falls back to
   # unoptimized image handling, which is fine for this scaffold.
+  # esbuild is a transitive dep of tsx (packages/db scripts runner). Its
+  # postinstall only fetches a prebuilt platform binary, no native compile
+  # toolchain required — same category as the sharp exception above, just
+  # allowed instead of skipped because tsx needs it to actually run.
+  esbuild: true
   sharp: false
 
 catalog:
@@ -24,6 +29,7 @@ catalog:
   "@biomejs/biome": 2.5.5
   vitest: 4.1.10
   tsup: 8.5.1
+  tsx: 4.23.1
   dotenv: 17.4.2
 
   # validation / shared
