@@ -1,12 +1,10 @@
 /**
- * Placeholder string-union types mirroring the Postgres enums that Phase 02
- * (docs/plans/02-db-schema-rls.md) defines with drizzle's `pgEnum`. Kept here
- * so code written ahead of the schema (e.g. `packages/shared` constants,
- * future detector interfaces) can reference the same literal values without
- * importing `@deplyx/db` and creating a circular dependency.
- *
- * Phase 02 is the source of truth once it lands — these are re-exported
- * from there, not redefined.
+ * String-union source of truth for the Postgres enums `packages/db` defines
+ * with drizzle's `pgEnum` (see `packages/db/src/schema/enums.ts`). Defined
+ * here, not there, so code that must not depend on `@deplyx/db` (e.g. other
+ * `packages/shared` modules, future detector interfaces) can reference the
+ * same literal values without a circular dependency — `packages/db` imports
+ * these tuples to build its `pgEnum`s, not the other way around.
  */
 export const SEVERITIES = ["critical", "high", "medium", "low"] as const;
 export type Severity = (typeof SEVERITIES)[number];
