@@ -3,7 +3,7 @@ import { config as loadEnv } from "dotenv";
 import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { findings, users } from "../src/schema/index.js";
 import { SEED_USERS } from "../src/seed-fixtures.js";
 import { withTenant } from "../src/tenant.js";
@@ -11,6 +11,12 @@ import { workerDb } from "../src/worker.js";
 
 // test/ runs with cwd = packages/db; the root .env lives two levels up.
 loadEnv({ path: resolve(process.cwd(), "../../.env") });
+
+// Live Neon over WAN: the first test pays cold TCP+TLS+auth (and possibly a
+// compute wake) before its first row comes back — vitest's default 5s budget
+// is too tight for that. Applies per-test, generous on purpose; a genuine
+// hang still fails, just slower.
+vi.setConfig({ testTimeout: 30_000 });
 
 /**
  * This is a live-database integration test, not a mock — it's the whole

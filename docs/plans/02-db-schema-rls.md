@@ -1,6 +1,6 @@
 # Phase 02 — DB Schema + RLS
 
-Status: code complete, pending live-DB verification    Updated: 2026-07-30
+Status: done    Updated: 2026-07-30
 
 ## Goal
 
@@ -31,16 +31,16 @@ Full Drizzle schema for all 9 tables with RLS enforced at the database layer AND
 - [x] Seed script: 2 users, 1 repo + 1 finding each (`packages/db/scripts/seed.ts`, fixture shared with the test via `src/seed-fixtures.ts`)
 - [x] `packages/db/test/rls.test.ts` — the RLS isolation test (4 cases: app-scoped-as-A sees only A, worker sees both, owner-role connection sees both, app client identity assertion — see Decisions made)
 - [x] Wire `pnpm db:generate`, `pnpm db:role`, `pnpm db:migrate`, `pnpm db:seed` scripts
-- [ ] Run `pnpm db:role && pnpm db:migrate && pnpm db:seed` against the real Neon project (blocked on `.env` — see Notes/blockers)
-- [ ] Manually confirm in the Neon SQL Editor: `relrowsecurity`/`relforcerowsecurity` both `t`, policies present, grants correct
+- [x] Run `pnpm db:role && pnpm db:migrate && pnpm db:seed` against the real Neon project — all three succeeded 2026-07-30 (role creation verified idempotent by running it twice; second run took the ALTER/rotate path)
+- [x] Confirmed against the live DB (owner-connection queries, since no local `psql`): `relrowsecurity`/`relforcerowsecurity` both `t` on all 10 RLS tables, `f`/`f` on `model_deprecations`; 7 policies present, all `TO deplyx_app FOR ALL`; grants exactly per spec (`arwd` on tenant tables, `r` on `model_deprecations`, none on auth tables)
 
-## Acceptance
+## Acceptance — all met 2026-07-30
 
-- `pnpm db:role && pnpm db:migrate && pnpm db:seed` succeeds against the real Neon project. **Not yet run — pending `.env`.**
-- `pnpm test` runs `rls.test.ts` green: user A's query via `withTenant` returns 0 of user B's findings; worker client returns both; a raw owner-role connection returns both (proving the isolation is real RLS, not app-level filtering). **Code complete and passing its env-gated skip path (`4 skipped` on this machine, no `.env`); not yet run for real against live data.**
-- Manually confirmed in `psql`: `\d+ findings` shows `rowsecurity | t` and `forcerowsecurity | t`. **Pending — no local `psql`; will use the Neon SQL Editor instead (see verification queries in the plan file).**
-
-Everything else — `pnpm lint && pnpm typecheck && pnpm test` across the whole repo (this phase's own code, not pre-existing unrelated `apps/web` changes) — is green today.
+- `pnpm db:role && pnpm db:migrate && pnpm db:seed` succeeded against the real Neon project. ✅
+- `rls.test.ts` ran green against live data — **4/4**: `withTenant(A)` returned only A's finding and zero of B's; `workerDb()` returned both; a raw owner connection returned both; and the app client asserted `current_user = deplyx_app` with `rolbypassrls = false`. ✅
+- RLS flags confirmed on the live DB via owner-connection catalog queries (no local `psql`; equivalent to `\d+`): `relrowsecurity`/`relforcerowsecurity` = `t`/`t` on all 10 RLS tables. ✅
+- Bonus negative check from the plan: an unscoped `deplyx_app` connection got **0 rows** from `findings` (fail-closed, not an error, not a leak) and `permission denied` on `sessions`. ✅
+- `pnpm lint && pnpm typecheck && pnpm test` green across this phase's code.
 
 ## Deferred out
 
@@ -65,7 +65,8 @@ Everything else — `pnpm lint && pnpm typecheck && pnpm test` across the whole 
 
 ## Notes / blockers
 
-- **Blocked on `.env`**: the user opted to create `.env` themselves ("I'll create .env now") rather than have it generated. Everything that doesn't require a live database is done, verified, and committed — schema, migration (hand-patched and regenerated with zero drift), role script, clients, `withTenant`, query helpers, `transitionFix`, `computeSeverity`, seed script, and the RLS test suite (currently passing its skip path). Once `.env` has real Neon credentials, running `pnpm db:role && pnpm db:migrate && pnpm db:seed && pnpm test` is the remaining step to flip this phase to `done`.
+- **Resolved — live verification done 2026-07-30.** Sequence of events worth recording: (1) an agent-created placeholder `.env` was written and `rm`'d mid-implementation, which destroyed the user's real `.env` — recreated by the user from `.env.example`; agent no longer writes or deletes `.env` under any circumstances. (2) Neon's control plane rejected the first `APP_DB_PASSWORD` at `CREATE ROLE` time as too weak (`insecure password...` — a Neon-specific policy; vanilla Postgres would have accepted it); user strengthened it and role creation succeeded, idempotency confirmed by a second run taking the rotate path. (3) vitest's default 5s per-test timeout was too tight for the suite's first live-Neon test (cold TCP+TLS+auth before the first row); raised to 30s via `vi.setConfig` in the test file — a genuine hang still fails, just slower.
+- **`.env` needs two corrections for future sessions** (agent ran this session with inline-derived values instead of editing the file): `DATABASE_URL` currently points at the *pooler* host — migrations should use the direct endpoint (same hostname minus `-pooler`); and `APP_DATABASE_URL` still contains the literal `HOST` placeholder — it should be `postgresql://deplyx_app:<APP_DB_PASSWORD, URL-encoded>@<pooler host>/neondb?sslmode=require`. Until fixed, `pnpm db:migrate` straight from the file will run DDL over the pooler and the RLS test will fail to connect as the app role.
 - **Hard ordering requirement**: `pnpm db:role` MUST run before `pnpm db:migrate`. The migration's `CREATE POLICY ... TO deplyx_app` and `GRANT ... TO deplyx_app` statements reference a role that must already exist — Postgres will fail the migration with "role deplyx_app does not exist" otherwise. This matches the acceptance criteria's `db:role && db:migrate && db:seed` ordering; called out explicitly here since it's a hard failure, not a soft preference.
 - Self-review pass (this session): read through every file in the diff again looking specifically for logic bugs, not just compiler errors. Findings: none in this phase's own code. Two things worth recording as verified-not-bugs:
   - `provider_keys.encrypted_key`'s generated SQL type is the quoted identifier `"bytea"` rather than bare `bytea` (drizzle's `customType()` output) — confirmed this resolves to the identical built-in type (Postgres folds unquoted identifiers to lowercase before lookup; `"bytea"` is already lowercase, so it matches `pg_type.typname` either way). Cosmetically unusual, functionally identical.

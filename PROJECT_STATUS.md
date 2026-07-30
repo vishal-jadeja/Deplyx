@@ -8,18 +8,20 @@ of every phase.
 
 ## Right now
 
-**Phase 02 (DB schema + RLS) — code complete, blocked on one manual step.**
+**Phase 02 (DB schema + RLS) — ✅ done, verified against the live Neon project (2026-07-30).**
 
-Everything that doesn't require a live database is done, tested, and committed. What's left is
-mechanical: put real Neon credentials in `.env`, then run four commands. See
-[**Next action**](#next-action) below.
+Role created (idempotency confirmed), migration 0000 applied, seed data in, and the RLS
+isolation suite ran 4/4 green against real data — including the fail-closed negative check
+(an unscoped `deplyx_app` connection sees 0 rows; auth tables are `permission denied`).
+Next up: **Phase 03 — Auth.js + GitHub App**. One small piece of homework first, see
+[**Next action**](#next-action).
 
 ## Phase status
 
 | # | Phase | Status |
 |---|---|---|
 | 01 | Monorepo + tooling | ✅ done |
-| 02 | DB schema + RLS | 🟡 code complete, pending live-DB run |
+| 02 | DB schema + RLS | ✅ done |
 | 03 | Auth.js + GitHub App | ⬜ not started |
 | 04 | Trigger.dev + feed-poll | ⬜ not started |
 | 05 | Scanner + findings | ⬜ not started |
@@ -35,44 +37,36 @@ Full detail, acceptance criteria, and per-phase decision logs: [`docs/plans/00-R
 
 ## Next action
 
-To finish Phase 02 and unblock Phase 03:
+Phase 02's live run used shell-derived connection strings, so **`.env` still needs two line
+fixes** before the db scripts work straight from the file in future sessions:
 
-1. Fill in `.env` at the repo root (copy from `.env.example`) with real values for:
-   `DATABASE_URL` (Neon owner, direct endpoint), `APP_DATABASE_URL` (pooled endpoint, filled in
-   *after* step 2 creates the role), `WORKER_DATABASE_URL` (same as `DATABASE_URL`), and
-   `APP_DB_PASSWORD` (a password you choose for the new role).
-2. Run, in this exact order (the migration references a role that must already exist):
-   ```bash
-   pnpm db:role       # creates deplyx_app
-   pnpm db:migrate    # applies migration 0000 — schema, RLS policies, FORCE RLS, grants
-   pnpm db:seed       # 2 users, 1 repo + finding each
-   pnpm test          # rls.test.ts now runs for real instead of skipping
-   ```
-3. In the Neon SQL Editor, spot-check: `relrowsecurity`/`relforcerowsecurity` are both `t` on every
-   tenant table; `pg_policies` shows one policy per tenant table; `model_deprecations`'s grant is
-   `SELECT`-only.
-4. Flip Phase 02's `Status:` line to `done` in `docs/plans/02-db-schema-rls.md` and this file's
-   table above.
+1. `DATABASE_URL` — currently the *pooler* host; migrations want the direct endpoint. Remove
+   `-pooler` from the hostname (e.g. `ep-xxx-pooler.c-4.us-east-2...` → `ep-xxx.c-4.us-east-2...`).
+2. `APP_DATABASE_URL` — still has the literal `HOST` placeholder. Set it to
+   `postgresql://deplyx_app:<your APP_DB_PASSWORD, URL-encoded>@<pooler host>/neondb?sslmode=require`
+   (this one *keeps* `-pooler` — the request path is meant to use the pooled endpoint).
 
-Nothing else is blocking — the moment `pnpm test` is green against live data, Phase 03 can start.
+Then Phase 03 (Auth.js + GitHub App) can start any time.
 
 ## What exists today
 
 - **Tooling** (Phase 01): pnpm/Turborepo workspace, Biome, Vitest, TypeScript 5.9.3 pinned,
   `packages/shared` with zod env validation.
-- **`@deplyx/db`** (Phase 02, this session): full Drizzle schema for all 8 product tables plus the
+- **`@deplyx/db`** (Phase 02): full Drizzle schema for all 8 product tables plus the
   3 Auth.js adapter tables; RLS policy + `FORCE ROW LEVEL SECURITY` on every tenant table, fail-closed
   (`current_setting('app.user_id', true)`, not fail-open); `withTenant()` — the only way to get a
   scoped query handle, a branded type nothing else can construct; `workerDb()` for the deliberately
   cross-tenant worker path; `transitionFix()` as the fix-status FSM's single conditional-UPDATE
   writer; an RLS isolation test suite proving the boundary is real Postgres RLS, not app-level
-  filtering.
+  filtering — **run 4/4 green against the live Neon project 2026-07-30**, migration applied, role
+  created, seed data in place.
 - **`computeSeverity()`** (`packages/shared`): the D2 date-ladder + no-replacement-bump severity
   scorer, pure and unit-tested with a frozen clock.
 
 ## Known gaps / deliberately deferred
 
-- No live-database verification yet for Phase 02 (see Next action above).
+- `.env`'s two DB-URL lines need correcting (see Next action above) — this session ran with
+  inline-derived values instead.
 - Auth.js wiring (Phase 03) — the adapter tables exist with matching column shapes but nothing
   populates `users` outside the seed script yet.
 - `provider_keys` encryption (Phase 07) — only the `bytea` column exists so far, no crypto.
