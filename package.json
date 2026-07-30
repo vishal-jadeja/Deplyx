@@ -15,6 +15,7 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "trigger:dev": "turbo run trigger:dev",
+    "db:generate": "turbo run db:generate --filter=@deplyx/db",
     "db:role": "turbo run db:role --filter=@deplyx/db",
     "db:migrate": "turbo run db:migrate --filter=@deplyx/db",
     "db:seed": "turbo run db:seed --filter=@deplyx/db"

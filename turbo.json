@@ -18,6 +18,9 @@
     "lint": {},
     "typecheck": {},
     "test": {},
+    "db:generate": {
+      "cache": false
+    },
     "db:role": {
       "cache": false
     },
