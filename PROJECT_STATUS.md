@@ -62,6 +62,10 @@ Then Phase 03 (Auth.js + GitHub App) can start any time.
   created, seed data in place.
 - **`computeSeverity()`** (`packages/shared`): the D2 date-ladder + no-replacement-bump severity
   scorer, pure and unit-tested with a frozen clock.
+- **Public landing page** (`apps/web/src/app/page.tsx`, out-of-sequence — built ahead of Phase 06,
+  logged in `docs/plans/01-monorepo-tooling.md`): marketing homepage at `/`, separate from the
+  future `(dashboard)` route group. Adds `lenis` outside the catalog-pinning convention — noted,
+  not yet reconciled.
 
 ## Known gaps / deliberately deferred
 
