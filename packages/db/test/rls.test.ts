@@ -4,10 +4,10 @@ import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, describe, expect, it, vi } from "vitest";
-import { findings, users } from "../src/schema/index.js";
-import { SEED_USERS } from "../src/seed-fixtures.js";
-import { withTenant } from "../src/tenant.js";
-import { workerDb } from "../src/worker.js";
+import { findings, users } from "../src/schema/index";
+import { SEED_USERS } from "../src/seed-fixtures";
+import { withTenant } from "../src/tenant";
+import { workerDb } from "../src/worker";
 
 // test/ runs with cwd = packages/db; the root .env lives two levels up.
 loadEnv({ path: resolve(process.cwd(), "../../.env") });

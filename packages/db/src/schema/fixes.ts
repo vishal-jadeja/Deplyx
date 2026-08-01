@@ -1,9 +1,9 @@
 import { integer, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { fixStatusEnum, riskClassEnum } from "./enums.js";
-import { findings } from "./findings.js";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
-import { users } from "./users.js";
+import { fixStatusEnum, riskClassEnum } from "./enums";
+import { findings } from "./findings";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
+import { users } from "./users";
 
 export const fixes = pgTable(
   "fixes",

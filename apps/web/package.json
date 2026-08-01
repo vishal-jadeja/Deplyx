@@ -13,10 +13,13 @@
     "trigger:dev": "trigger dev"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "catalog:",
     "@deplyx/db": "workspace:*",
+    "@deplyx/github": "workspace:*",
     "@deplyx/shared": "workspace:*",
     "lenis": "1.1.13",
     "next": "catalog:",
+    "next-auth": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

@@ -1,6 +1,6 @@
 import { pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
 
 /**
  * The tenant root. `users.id` is the single RLS scoping key for the whole

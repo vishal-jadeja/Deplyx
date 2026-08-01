@@ -73,3 +73,7 @@ Full Drizzle schema for all 9 tables with RLS enforced at the database layer AND
   - postgres.js has built-in `bytea ↔ Buffer` serialization (hex-encoded wire format) — confirmed by reading its `types.js` — so `provider_keys.encryptedKey`'s `customType<{ data: Buffer }>` round-trips correctly with no extra type registration needed, ready for Phase 07.
 - Regenerating the migration a second time against the finished schema produced `No schema changes, nothing to migrate` — confirms the hand-patched migration and the schema are in sync and won't drift on the next `db:generate`.
 - `apps/web/src/app/layout.tsx` and `apps/web/next-env.d.ts` show as modified in `git status` but predate this session and were never touched by this phase's work (confirmed via `git diff` — the layout change is an unrelated `suppressHydrationWarning` edit). Left alone; not this phase's concern.
+- **Phase 03 added a second migration** (`0001_true_sage.sql`, `removed_at` on `github_installations`
+  and `repositories`) — see `docs/plans/03-auth-github-app.md` "Decisions made" for why. Noted here
+  because it touches this phase's schema after the fact; the migration itself, and the reasoning
+  behind it, live in the Phase 03 file, not duplicated here.

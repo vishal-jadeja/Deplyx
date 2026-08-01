@@ -8,7 +8,7 @@ Source design/approval: `C:\Users\visha\.claude\plans\you-are-a-senior-sleepy-ye
 |---|---|---|---|
 | 01 | [Monorepo + tooling](01-monorepo-tooling.md) | done | 2026-07-25 |
 | 02 | [DB schema + RLS](02-db-schema-rls.md) | done | 2026-07-30 |
-| 03 | [Auth.js + GitHub App](03-auth-github-app.md) | not started | — |
+| 03 | [Auth.js + GitHub App](03-auth-github-app.md) | code complete, live acceptance pending | 2026-08-01 |
 | 04 | [Trigger.dev + feed-poll](04-trigger-feed-poll.md) | not started | — |
 | 05 | [Scanner + findings](05-scanner-findings.md) | not started | — |
 | 06 | [Read-only dashboard](06-dashboard-readonly.md) — **Milestone 1** | not started | — |

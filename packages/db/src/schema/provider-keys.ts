@@ -8,10 +8,10 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
-import { llmProviderEnum } from "./enums.js";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
-import { users } from "./users.js";
+import { llmProviderEnum } from "./enums";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
+import { users } from "./users";
 
 /**
  * `bytea` has no built-in drizzle-orm pg-core column type — declared via

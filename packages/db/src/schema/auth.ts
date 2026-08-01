@@ -1,5 +1,5 @@
 import { integer, pgTable, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { users } from "./users.js";
+import { users } from "./users";
 
 /**
  * Auth.js v5 adapter tables (Phase 03 — `@auth/drizzle-adapter@1.11.3`).

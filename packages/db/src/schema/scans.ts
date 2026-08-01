@@ -1,9 +1,9 @@
 import { integer, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { scanStatusEnum } from "./enums.js";
-import { repositories } from "./repositories.js";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
-import { users } from "./users.js";
+import { scanStatusEnum } from "./enums";
+import { repositories } from "./repositories";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
+import { users } from "./users";
 
 export const scans = pgTable(
   "scans",

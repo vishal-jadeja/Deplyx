@@ -1,7 +1,7 @@
 import { bigint, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
-import { users } from "./users.js";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
+import { users } from "./users";
 
 export const githubInstallations = pgTable(
   "github_installations",
@@ -16,6 +16,12 @@ export const githubInstallations = pgTable(
     accountLogin: text("account_login").notNull(),
     accountType: text("account_type").notNull(),
     suspendedAt: timestamp("suspended_at", { withTimezone: true }),
+    // Set when the `installation.deleted` webhook fires (App fully
+    // uninstalled) — soft, never a DELETE, matching the same
+    // never-destroy-history principle findings already use (decision #7).
+    // Distinct from `suspendedAt`: a suspended App can be resumed with all
+    // data intact; a removed one cannot without a fresh install.
+    removedAt: timestamp("removed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

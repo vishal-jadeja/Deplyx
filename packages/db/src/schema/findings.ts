@@ -1,10 +1,10 @@
 import { integer, pgPolicy, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
-import { findingKindEnum, severityEnum } from "./enums.js";
-import { repositories } from "./repositories.js";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
-import { scans } from "./scans.js";
-import { users } from "./users.js";
+import { findingKindEnum, severityEnum } from "./enums";
+import { repositories } from "./repositories";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
+import { scans } from "./scans";
+import { users } from "./users";
 
 export const findings = pgTable(
   "findings",

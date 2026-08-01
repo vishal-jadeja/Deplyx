@@ -1,8 +1,8 @@
 import { bigint, boolean, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { githubInstallations } from "./github-installations.js";
-import { tenantPredicate } from "./rls.js";
-import { appRole } from "./roles.js";
-import { users } from "./users.js";
+import { githubInstallations } from "./github-installations";
+import { tenantPredicate } from "./rls";
+import { appRole } from "./roles";
+import { users } from "./users";
 
 export const repositories = pgTable(
   "repositories",
@@ -21,6 +21,13 @@ export const repositories = pgTable(
     private: boolean("private").notNull().default(false),
     lastScannedAt: timestamp("last_scanned_at", { withTimezone: true }),
     autoMergeEnabled: boolean("auto_merge_enabled").notNull().default(false),
+    // Set when this repo is dropped from its installation — either the
+    // whole App was uninstalled (`installation.deleted`, applied to every
+    // repo under that installation) or just this repo was deselected
+    // (`installation_repositories.removed`). Soft, same rationale as
+    // `github_installations.removedAt`: scans/findings/fixes must survive a
+    // later reinstall or re-add.
+    removedAt: timestamp("removed_at", { withTimezone: true }),
   },
   (table) => [
     pgPolicy("repositories_tenant_isolation", {

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { users } from "../schema/index.js";
-import type { TenantDb } from "../tenant.js";
+import { users } from "../schema/index";
+import type { TenantDb } from "../tenant";
 
 /**
  * Requiring `db: TenantDb` (not a raw client type) is the compile-time half

@@ -1,7 +1,7 @@
 import type { FixStatus } from "@deplyx/shared";
 import { and, eq } from "drizzle-orm";
-import { fixes } from "./schema/index.js";
-import type { TenantDb } from "./tenant.js";
+import { fixes } from "./schema/index";
+import type { TenantDb } from "./tenant";
 
 export class FixTransitionError extends Error {
   constructor(

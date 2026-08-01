@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { getAppDb } from "./client.js";
+import { getAppDb } from "./client";
 
 // Unique brand so TenantDb can only ever be produced inside withTenant().
 declare const TENANT_BRAND: unique symbol;

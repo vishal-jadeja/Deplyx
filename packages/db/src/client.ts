@@ -1,7 +1,7 @@
 import { getEnv } from "@deplyx/shared/env";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres, { type Sql } from "postgres";
-import * as schema from "./schema/index.js";
+import * as schema from "./schema/index";
 
 /**
  * The raw, unscoped app-role connection (`deplyx_app`, RLS-enforced by

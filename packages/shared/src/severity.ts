@@ -1,4 +1,4 @@
-import type { Severity } from "./enums.js";
+import type { Severity } from "./enums";
 
 export interface ComputeSeverityInput {
   /** `findings`-adjacent: the deprecation's announced shutdown date, if any. */

@@ -1,7 +1,7 @@
 import type { LlmProvider } from "@deplyx/shared";
 import { eq } from "drizzle-orm";
-import { providerKeys } from "../schema/index.js";
-import type { TenantDb } from "../tenant.js";
+import { providerKeys } from "../schema/index";
+import type { TenantDb } from "../tenant";
 
 /**
  * Deliberately excludes `encrypted_key` — this is the "never selected on

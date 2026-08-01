@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { scans } from "../schema/index.js";
-import type { TenantDb } from "../tenant.js";
+import { scans } from "../schema/index";
+import type { TenantDb } from "../tenant";
 
 export async function listScansForRepository(db: TenantDb, repositoryId: string) {
   return db.select().from(scans).where(eq(scans.repositoryId, repositoryId));

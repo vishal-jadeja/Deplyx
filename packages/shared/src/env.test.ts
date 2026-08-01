@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { _resetEnvCacheForTests, getEnv } from "./env.js";
+import { _resetEnvCacheForTests, getEnv } from "./env";
 
 const REQUIRED = {
   APP_DATABASE_URL: "postgresql://app:pw@host/db",

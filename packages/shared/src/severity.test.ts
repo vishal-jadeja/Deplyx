@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { computeSeverity } from "./severity.js";
+import { computeSeverity } from "./severity";
 
 const NOW = new Date("2026-07-30T12:00:00.000Z");
 const WITH_REPLACEMENT = ["gpt-5-mini"];

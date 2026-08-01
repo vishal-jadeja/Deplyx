@@ -3,8 +3,8 @@ import { config as loadEnv } from "dotenv";
 import { inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { findings, githubInstallations, repositories, users } from "../src/schema/index.js";
-import { SEED_USERS } from "../src/seed-fixtures.js";
+import { findings, githubInstallations, repositories, users } from "../src/schema/index";
+import { SEED_USERS } from "../src/seed-fixtures";
 
 /**
  * Seeds 2 users, 1 GitHub installation + repository + finding each — the

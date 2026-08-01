@@ -66,7 +66,12 @@
   },
   "overrides": [
     {
-      "includes": ["apps/web/**", "!apps/web/src/trigger/**"],
+      "includes": [
+        "apps/web/**",
+        "!apps/web/src/trigger/**",
+        "!apps/web/src/auth.ts",
+        "!apps/web/src/app/api/github/webhooks/route.ts"
+      ],
       "linter": {
         "rules": {
           "style": {
@@ -74,7 +79,7 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "@deplyx/db/worker": "The worker DB client bypasses RLS and is cross-tenant by design. It may only be imported from apps/web/src/trigger/** (Trigger.dev tasks). Use withTenant() from '@deplyx/db' on the request path instead."
+                  "@deplyx/db/worker": "The worker DB client bypasses RLS and is cross-tenant by design. It may only be imported from apps/web/src/trigger/** (Trigger.dev tasks), apps/web/src/auth.ts (Auth.js adapter tables have no grants at all), or apps/web/src/app/api/github/webhooks/route.ts (webhook installation lookups have no session to scope by). Use withTenant() from '@deplyx/db' on the request path instead."
                 }
               }
             }

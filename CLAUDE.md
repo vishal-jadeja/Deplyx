@@ -18,22 +18,24 @@ later, deprecated packages), and generates reviewable fix PRs.
 
 Check `PROJECT_STATUS.md` first, every session — it's the one-glance answer to "where are we."
 Phase 01 (tooling) and Phase 02 (DB schema + RLS) are done and live-verified against Neon. Phase 03
-(Auth.js + GitHub App) is next, not started.
+(Auth.js + GitHub App) is code-complete (`pnpm lint && pnpm typecheck && pnpm test` green) but its
+live acceptance criteria haven't run yet — needs the user's real GitHub App/OAuth App credentials
+and a browser login. Phase 04 (Trigger.dev + feed-poll) is next, not started.
 
 ## Repo layout
 
 ```
 apps/web            Next.js app (dashboard, auth, GitHub App callback, webhooks) + Trigger.dev tasks
 packages/db          Drizzle schema, RLS policies, migrations, typed clients
-packages/github      Octokit wrapper: App auth, token minting, tarball fetch, PR creation (Phase 03+)
+packages/github      Octokit wrapper: App auth, token minting, repo listing, webhooks (PR creation lands Phase 10+)
 packages/scanner     tree-sitter parsers, literal matcher, call-site extraction (Phase 05+)
 packages/ai          BYOK provider adapter + fix-generation interface (Phase 07+)
 packages/shared      zod schemas, enums, shared constants, env validation
 docs/plans/          phase-by-phase specs, acceptance criteria, per-phase decision logs
 ```
 
-Only `apps/web`, `packages/db`, and `packages/shared` exist as real code today; the rest land with
-their respective phases.
+`apps/web`, `packages/db`, `packages/shared`, and `packages/github` exist as real code today; the
+rest land with their respective phases.
 
 ## The trust boundary — read before touching `packages/db`
 
@@ -51,8 +53,13 @@ isolation breaks.
     `TenantDb` type nothing else can construct — you cannot accidentally get an unscoped client from
     this entrypoint.
   - Worker/cross-tenant path: `workerDb()` from `@deplyx/db/worker` — a **separate entrypoint**,
-    import-restricted by Biome lint to `apps/web/src/trigger/**` only. If you're writing anything
-    under `apps/web/src/trigger/`, this is what you import for DB access, not the default export.
+    import-restricted by Biome lint to a short, named allowlist: `apps/web/src/trigger/**`
+    (Trigger.dev tasks — the original case), `apps/web/src/auth.ts` (Auth.js's adapter tables have
+    zero grants to `deplyx_app`, and `users` itself needs a bypass at account-creation time since
+    there's no `app.user_id` yet to scope by), and `apps/web/src/app/api/github/webhooks/route.ts`
+    (GitHub calls it with no Deplyx session — it must resolve the owning `user_id` before opening a
+    scoped `withTenant` transaction for the actual write). Adding a fourth call site is a decision
+    to raise, not a lint rule to quietly work around.
   - Trigger.dev tasks import only from `packages/*` — no Next.js runtime imports (lint-enforced,
     mirrors the client restriction above).
 - **`transitionFix(db, fixId, from, to)`** is the only writer for `fixes.status` — a conditional
@@ -89,6 +96,13 @@ likely to bite an agent mid-task:
   column or cache.
 - **Provider keys**: AES-256-GCM, per-record IV+tag in one `bytea`, `key_version` column exists now
   (Phase 02) but no crypto yet (Phase 07). Never select `encrypted_key` on the request path.
+- **Internal relative imports in `packages/db`, `packages/shared`, and `packages/github` are
+  extensionless** (`from "./schema/index"`, not `from "./schema/index.js"`) — Turbopack has no
+  `.js → .ts` fallback for exact-extension specifiers when bundling these workspace packages as raw
+  TS source via `transpilePackages` (confirmed via a real `pnpm dev` failure in Phase 03, not
+  assumed); `tsc`, `tsx`, and `vitest` all resolve extensionless imports equally well, so this is the
+  one convention that works across every tool in play. New files in these packages should follow
+  suit — don't reintroduce `.js` suffixes on relative imports.
 
 ## Conventions
 
@@ -119,8 +133,8 @@ pnpm db:seed
 
 ## Known gaps (see `PROJECT_STATUS.md` for the live list)
 
-- Auth.js wiring not started (Phase 03) — adapter tables exist, nothing populates `users` outside
-  the seed script yet.
+- Phase 03's live acceptance (real GitHub login, App install/uninstall) hasn't run yet — code is
+  done and gate-green, but needs the user's real credentials. See `PROJECT_STATUS.md`'s Next action.
 - `provider_keys` encryption not implemented (Phase 07) — column exists, no crypto.
-- Root `README.md` is intentionally a Phase 01-era stub until Phase 06 gives it something real to
-  document end-to-end.
+- Root `README.md` gained a scoped GitHub App/Auth setup section in Phase 03 but is still not the
+  full Phase-06 guide (DB role/migration steps aren't documented there yet).
