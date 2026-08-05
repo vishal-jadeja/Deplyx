@@ -1,0 +1,14 @@
+# Force LF for source/text files regardless of local core.autocrlf — Biome's
+# formatter (biome.json) expects LF and has no lineEnding override, so a
+# Windows checkout with autocrlf=true was rewriting every file to CRLF and
+# failing `pnpm lint` on files nobody had touched.
+* text=auto eol=lf
+
+# Binary assets — never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
