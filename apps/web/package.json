@@ -26,8 +26,8 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@tailwindcss/postcss": "catalog:",
-    "@trigger.dev/build": "catalog:",
-    "@trigger.dev/sdk": "catalog:",
+    "@trigger.dev/build": "4.5.9",
+    "@trigger.dev/sdk": "4.5.9",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
